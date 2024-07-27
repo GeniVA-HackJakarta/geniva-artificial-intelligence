@@ -1,6 +1,8 @@
+import base64
 import uvicorn
 from config import config
 from prompt import Prompt
+from models.request import RequestBody
 from tools.agent_excel import ExcelAgent
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -58,16 +60,21 @@ async def test_qdrant():
         return {"message": "Qdrant connection successful"}
     raise HTTPException(status_code=500, detail="Qdrant connection failed")
 
-@app.post("/get-recommendation-text")
-async def recommendation_text(query: str):
-    result = agent_excel.invoke(query=query, inst_prompt=Prompt.inst_prompt)
-    return {"message": result}
-
-@app.post("/get-recommendation-image")
-def recommendation_image(file: UploadFile = File(...)):
-    image_content = file.file.read()
-    result = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
-    return {"message": result}
+@app.post("/generate-recommendation")
+def generate_recommendation(request_body: RequestBody):
+    if request_body.query:
+        result = agent_excel.invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
+        return {"message": result}
+    elif request_body.file:
+        image_content = base64.b64decode(request_body.file)
+        result = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
+        return {"message": result}
+    elif request_body.query and request_body.file:
+        question = request_body.query
+        image_content = base64.b64decode(request_body.file)
+        
+    else:
+        raise HTTPException(status_code=400, detail="Invalid request: provide either a query or a file")
 
 
 if __name__ == "__main__":

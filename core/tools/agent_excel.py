@@ -11,31 +11,33 @@ class ExcelAgent:
             api_key=api_key
         )
         self.llm = llm
-        self.data_menu = None
-        self.data_restoran = None
+        self.data_grabfood = None
+        agent_grabfood = self._agent_grab_food()
         self.tools = {
-            "menu_makanan": self._agent_menu(df_location="temporary-data/menu.xlsx"),
-            "restoran": self._agent_restoran(df_location="temporary-data/restaurant.xlsx"),
+            "menu_makanan": agent_grabfood,
+            "restoran": agent_grabfood,
             "common_conversation": llm
         }
+        self._agent_grab_food()
 
     def invoke(self, query: str, inst_prompt: str):
         tool_choosen = self.agent_routing(query=query)
         tool_agent = self.tools[tool_choosen]
         if tool_agent is not None:
             additional_query = self._additional_prompt(tool_name=tool_choosen, query=query)
-            _result = tool_agent.invoke("System Instruct: " + inst_prompt + additional_query)
+            _result = tool_agent.invoke("System Instruct: " + inst_prompt + additional_query + "ambil dari nilai menu_id")
             if "," in _result["output"]:
                 _result["output"] = list(map(lambda char: int(char.strip()), _result['output'].split(",")))
             print("[Result Query / LLM Raw]", _result)
             if isinstance(_result, dict):
                 if tool_choosen == "menu_makanan":
-                    df_filter = self.data_menu[self.data_menu['menu_id'].isin(_result["output"])].to_string()
+                    df_filter = self.data_grabfood[self.data_grabfood['menu_id'].isin(_result["output"])].to_string()
                     result_description = self.llm.invoke(Prompt.desc_food_prompt.format(context_data=df_filter, question=query)).content
                 elif tool_choosen == "restoran":
-                    df_filter = self.data_restoran[self.data_restoran['id_zomato'].isin(_result["output"])].to_string()
+                    df_filter = self.data_grabfood[self.data_grabfood['id_zomato'].isin(_result["output"])].to_string()
                     result_description = self.llm.invoke(Prompt.desc_food_prompt.format(context_data=df_filter, question=query)).content
                 _result["description"] = result_description
+                _result["type"] = tool_choosen
                 result = _result
             else:
                 result = {"input": "System Instruct: " + inst_prompt + additional_query, "output": _result.content, "description": ""}
@@ -71,29 +73,24 @@ class ExcelAgent:
         if tool_name == "menu_makanan":
             result_query += " Cukup berikan menu_id dengan maksimal 3 item yang dipisah dengan koma (,)"
         elif tool_name == "restoran":
-            result_query += " Cukup berikan id_zomato dengan maksimal 3 item yang dipisah dengan koma (,)"
+            result_query += " Cukup berikan restaurant_id dengan maksimal 3 item yang dipisah dengan koma (,)"
         elif tool_name == "rute_bus":
             # TODO: transID
             pass
         return result_query
-
-    def _agent_menu(self, df_location: str):
-        data_menu = pd.read_excel(df_location)
-        data_menu = data_menu.head(100)
-        agent_menu = create_pandas_dataframe_agent(
+    
+    def _agent_grab_food(self):
+        data_menu = pd.read_excel("temporary-data/menu.xlsx")
+        data_menu = data_menu.head(100)    
+        data_restoran = pd.read_excel("temporary-data/restaurant.xlsx")
+        data_restoran = data_restoran.head(100)
+        column_names = list(map(lambda name: name.strip(), data_restoran.columns))
+        data_restoran.columns = ['restaurant_id'] + column_names[1:]
+        data_agg = data_menu.merge(right=data_restoran, on="restaurant_id")
+        data_agg = data_agg.drop("average_cost_for_two", axis=1)
+        self.data_grabfood = data_agg
+        agent_grabfood = create_pandas_dataframe_agent(
             llm=self.llm, df=data_menu, verbose=True,
             max_iterations=5, allow_dangerous_code=True
         )
-        self.data_menu = data_menu
-        return agent_menu
-
-    def _agent_restoran(self, df_location: str):
-        data_restoran = pd.read_excel(df_location)
-        data_restoran = data_restoran.head(100)
-        data_restoran.columns = list(map(lambda name: name.strip(), data_restoran.columns))
-        agent_restorant = create_pandas_dataframe_agent(
-            llm=self.llm, df=data_restoran, verbose=True,
-            max_iterations=5, allow_dangerous_code=True
-        )
-        self.data_restoran = data_restoran
-        return agent_restorant
+        return agent_grabfood

@@ -29,10 +29,11 @@ def generate_image_description(model: object, embedding: object, client: object,
     context_retrieved = [
         {
             "text": hit.payload["text"],
+            "menu_id": hit.payload["menu_id"],
+            "restoran_id": hit.payload["restoran_id"],
             "score": hit.score
         } 
         for hit in semantic_search_result
     ]
-    print(context_retrieved)
     
-    return response.content
+    return context_retrieved
