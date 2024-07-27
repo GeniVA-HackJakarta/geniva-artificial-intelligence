@@ -4,9 +4,9 @@ from config import config
 from prompt import Prompt
 from models.request import RequestBody
 from tools.agent_excel import ExcelAgent
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_google_genai import ChatGoogleGenerativeAI
-from fastapi import FastAPI, HTTPException, File, UploadFile
 from tools.image_description import generate_image_description
 from langchain_google_genai.embeddings import GoogleGenerativeAIEmbeddings
 from db.connect import get_postgres_connection, get_redis_connection, get_qdrant_connection
@@ -62,20 +62,21 @@ async def test_qdrant():
 
 @app.post("/generate-recommendation")
 def generate_recommendation(request_body: RequestBody):
-    if request_body.query:
+    if request_body.query and request_body.file:
+        question = request_body.query
+        image_content = base64.b64decode(request_body.file)
+        context_data = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
+        result = agent_excel.direct_invoke(query=question, context_data=context_data)
+        return {"message": result}
+    elif request_body.query and request_body.file is None:
         result = agent_excel.invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
         return {"message": result}
-    elif request_body.file:
+    elif request_body.query is None and request_body.file:
         image_content = base64.b64decode(request_body.file)
         result = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
         return {"message": result}
-    elif request_body.query and request_body.file:
-        question = request_body.query
-        image_content = base64.b64decode(request_body.file)
-        
     else:
         raise HTTPException(status_code=400, detail="Invalid request: provide either a query or a file")
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

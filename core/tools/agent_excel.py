@@ -20,6 +20,14 @@ class ExcelAgent:
         }
         self._agent_grab_food()
 
+    def direct_invoke(self, query: str, context_data: str):
+        df_context = pd.DataFrame(context_data)
+        list_menu_id = df_context["menu_id"].tolist()
+        df_filter = self.data_grabfood[self.data_grabfood["menu_id"].isin(list_menu_id)]
+        result_description = self.llm.invoke(Prompt.desc_food_prompt.format(context_data=df_filter, question=query)).content
+        result = {"input": query, "output": list_menu_id, "description": result_description}
+        return result
+
     def invoke(self, query: str, inst_prompt: str):
         tool_choosen = self.agent_routing(query=query)
         tool_agent = self.tools[tool_choosen]
