@@ -29,7 +29,6 @@ def get_redis_connection():
 def get_qdrant_connection():
     try:
         qdrant_client = QdrantClient(config.QDRANT_URL)
-        qdrant_client.get_collections()
         print("Qdrant connection successful")
         return qdrant_client
     except Exception as e:

@@ -17,11 +17,15 @@ class Config(BaseSettings):
     # Qdrant
     QDRANT_HOST: str = os.getenv("QDRANT_HOST", "localhost")
     QDRANT_PORT: int = int(os.getenv("QDRANT_PORT", 6333))
+    QDRANT_COLLECTION_NAME: str = os.getenv("QDRANT_COLLECTION_NAME")
+    QDRANT_EMBEDDING_NAME: str = os.getenv("QDRANT_EMBEDDING_NAME")
+    QDRANT_LIMIT: int = int(os.getenv("QDRANT_LIMIT", 5))
 
     # Gemini
     GEMINI_MODEL_NAME: str = os.getenv("GEMINI_MODEL_NAME")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
     GEMINI_TEMPERATURE: float = os.getenv("GEMINI_TEMPERATURE")
+    GEMINI_VISION_MODEL_NAME: str = os.getenv("GEMINI_VISION_MODEL_NAME")
 
     @property
     def DATABASE_URL(self):

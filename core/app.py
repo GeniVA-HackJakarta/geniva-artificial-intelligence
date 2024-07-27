@@ -1,9 +1,12 @@
 import uvicorn
 from config import config
-from typing import Optional
+from prompt import Prompt
+from fastembed import TextEmbedding
 from tools.agent_excel import ExcelAgent
-from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from langchain_google_genai import ChatGoogleGenerativeAI
+from fastapi import FastAPI, HTTPException, File, UploadFile
+from tools.image_description import generate_image_description
 from db.connect import get_postgres_connection, get_redis_connection, get_qdrant_connection
 
 
@@ -17,11 +20,17 @@ app.add_middleware(
     allow_credentials=True,
 )
 
+agent_visual = ChatGoogleGenerativeAI(
+    model=config.GEMINI_VISION_MODEL_NAME,
+    api_key=config.GEMINI_API_KEY
+)
 agent_excel = ExcelAgent(
     api_key=config.GEMINI_API_KEY,
     model_name=config.GEMINI_MODEL_NAME,
     temperature=config.GEMINI_TEMPERATURE
 )
+client_qdrant = get_qdrant_connection()
+embedding_model = TextEmbedding(config.QDRANT_EMBEDDING_NAME)
 
 
 @app.get("/")
@@ -49,9 +58,15 @@ async def test_qdrant():
         return {"message": "Qdrant connection successful"}
     raise HTTPException(status_code=500, detail="Qdrant connection failed")
 
-@app.get("/get-recommendation")
-async def get_recommendation(query: str, inst_prompt: Optional[str]):
-    result = agent_excel.invoke(query=query, inst_prompt=inst_prompt)
+@app.get("/get-recommendation-text")
+async def get_recommendation_text(query: str):
+    result = agent_excel.invoke(query=query, inst_prompt=Prompt.inst_prompt)
+    return {"message": result}
+
+@app.post("/get-recommendation-image")
+def get_recommendation_image(file: UploadFile = File(...)):
+    image_content = file.file.read()
+    result = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
     return {"message": result}
 
 

@@ -14,7 +14,6 @@ class ExcelAgent:
         self.tools = {
             "menu_makanan": self._agent_menu(df_location="temporary-data/menu.xlsx"),
             "restoran": self._agent_restoran(df_location="temporary-data/restaurant.xlsx"),
-            # "rute_bus": self._agent_rutetj(df_location="temporary-data/rutetj.xlsx"),
             "common_conversation": llm
         }
     
@@ -104,11 +103,3 @@ class ExcelAgent:
             max_iterations=5, allow_dangerous_code=True
         )
         return agent_restorant
-
-    # def _agent_rutetj(self, df_location: str):
-    #     data = pd.read_excel(df_location)
-    #     agent_menu = create_pandas_dataframe_agent(
-    #         llm=self.llm, df=data, verbose=True,
-    #         max_iterations=5, allow_dangerous_code=True
-    #     )
-    #     return agent_menu
