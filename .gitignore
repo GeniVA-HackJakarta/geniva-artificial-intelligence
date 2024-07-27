@@ -169,6 +169,3 @@ docker-compose-service.yml
 # TODO
 TODO
 
-# Testing API
-tests/*
-
