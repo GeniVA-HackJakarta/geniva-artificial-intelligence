@@ -16,7 +16,8 @@ class ExcelAgent:
         self.tools = {
             "menu_makanan": agent_grabfood,
             "restoran": agent_grabfood,
-            "common_conversation": llm
+            "common_conversation": llm,
+            "transportation": None
         }
         self._agent_grab_food()
 
@@ -28,9 +29,13 @@ class ExcelAgent:
         result = {"input": query, "output": list_menu_id, "description": result_description}
         return result
 
-    def invoke(self, query: str, inst_prompt: str):
+    def choice_route(self, query: str):
         tool_choosen = self.agent_routing(query=query)
         tool_agent = self.tools[tool_choosen]
+        return tool_choosen, tool_agent
+
+    def invoke(self, query: str, inst_prompt: str):
+        tool_choosen, tool_agent = self.choice_route(query=query)
         if tool_agent is not None:
             additional_query = self._additional_prompt(tool_name=tool_choosen, query=query)
             _result = tool_agent.invoke(
@@ -91,14 +96,12 @@ class ExcelAgent:
             result_query += " cukup berikan menu_id dengan maksimal 3 item yang dipisah dengan koma (,)"
         elif tool_name == "restoran":
             result_query += " cukup berikan restaurant_id dengan maksimal 3 item yang dipisah dengan koma (,)"
-        elif tool_name == "rute_bus":
-            # TODO: transID
-            pass
         return result_query
     
     def _agent_grab_food(self):
         data_menu = pd.read_excel("temporary-data/menu.xlsx")
         data_menu = data_menu.head(100)    
+        data_menu["price"] = data_menu["price"].apply(lambda i: i.replace("$", "")).astype(float)
         data_restoran = pd.read_excel("temporary-data/restaurant.xlsx")
         data_restoran = data_restoran.head(100)
         column_names = list(map(lambda name: name.strip(), data_restoran.columns))

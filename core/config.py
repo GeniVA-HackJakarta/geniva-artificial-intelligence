@@ -27,6 +27,9 @@ class Config(BaseSettings):
     GEMINI_TEMPERATURE: float = os.getenv("GEMINI_TEMPERATURE")
     GEMINI_VISION_MODEL_NAME: str = os.getenv("GEMINI_VISION_MODEL_NAME")
 
+    # Gmaps
+    GMAPS_API_KEY: str = os.getenv("GMAPS_API_KEY")
+
     @property
     def DATABASE_URL(self):
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"

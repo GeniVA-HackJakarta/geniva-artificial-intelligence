@@ -2,6 +2,7 @@ import base64
 import uvicorn
 from config import config
 from prompt import Prompt
+from tools.agent_maps import MapsAgent
 from models.request import RequestBody
 from tools.agent_excel import ExcelAgent
 from fastapi import FastAPI, HTTPException
@@ -22,6 +23,12 @@ app.add_middleware(
     allow_credentials=True,
 )
 
+agent_maps = MapsAgent(
+    api_key=config.GEMINI_API_KEY,
+    gmaps_api_key=config.GMAPS_API_KEY,
+    model_name=config.GEMINI_MODEL_NAME,
+    temperature=config.GEMINI_TEMPERATURE
+)
 agent_visual = ChatGoogleGenerativeAI(
     model=config.GEMINI_VISION_MODEL_NAME,
     api_key=config.GEMINI_API_KEY
@@ -69,7 +76,11 @@ def generate_recommendation(request_body: RequestBody):
         result = agent_excel.direct_invoke(query=question, context_data=context_data)
         return {"message": result}
     elif request_body.query and request_body.file is None:
-        result = agent_excel.invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
+        tool_choosen, _ = agent_excel.choice_route(query=request_body.query)
+        if tool_choosen == "transportation":
+            result = agent_maps.invoke(query=request_body.query, lon=request_body.lon, lat=request_body.lat)
+        else:
+            result = agent_excel.invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
         return {"message": result}
     elif request_body.query is None and request_body.file:
         image_content = base64.b64decode(request_body.file)
