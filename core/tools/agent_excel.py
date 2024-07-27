@@ -33,16 +33,25 @@ class ExcelAgent:
         tool_agent = self.tools[tool_choosen]
         if tool_agent is not None:
             additional_query = self._additional_prompt(tool_name=tool_choosen, query=query)
-            _result = tool_agent.invoke("System Instruct: " + inst_prompt + additional_query + "ambil dari nilai menu_id")
-            if "," in _result["output"]:
-                _result["output"] = list(map(lambda char: int(char.strip()), _result['output'].split(",")))
+            _result = tool_agent.invoke(
+                "System Instruct: " + inst_prompt + 
+                additional_query + "berikan minimal 1 rekomendasi menu_id"
+            )
+            try:
+                if "," in _result["output"]:
+                    _result["output"] = list(map(lambda char: int(char.strip()), _result['output'].split(",")))
+            except TypeError:
+                print("[Test Flag]", _result)
             print("[Result Query / LLM Raw]", _result)
             if isinstance(_result, dict):
+                if isinstance(_result["output"], str):
+                    if _result["output"].isdecimal():
+                        _result["output"] = [int(_result["output"])]
                 if tool_choosen == "menu_makanan":
                     df_filter = self.data_grabfood[self.data_grabfood['menu_id'].isin(_result["output"])].to_string()
                     result_description = self.llm.invoke(Prompt.desc_food_prompt.format(context_data=df_filter, question=query)).content
                 elif tool_choosen == "restoran":
-                    df_filter = self.data_grabfood[self.data_grabfood['id_zomato'].isin(_result["output"])].to_string()
+                    df_filter = self.data_grabfood[self.data_grabfood['restaurant_id'].isin(_result["output"])].to_string()
                     result_description = self.llm.invoke(Prompt.desc_food_prompt.format(context_data=df_filter, question=query)).content
                 _result["description"] = result_description
                 _result["type"] = tool_choosen
@@ -79,9 +88,9 @@ class ExcelAgent:
     def _additional_prompt(self, tool_name: str, query: str) -> str:
         result_query = query
         if tool_name == "menu_makanan":
-            result_query += " Cukup berikan menu_id dengan maksimal 3 item yang dipisah dengan koma (,)"
+            result_query += " cukup berikan menu_id dengan maksimal 3 item yang dipisah dengan koma (,)"
         elif tool_name == "restoran":
-            result_query += " Cukup berikan restaurant_id dengan maksimal 3 item yang dipisah dengan koma (,)"
+            result_query += " cukup berikan restaurant_id dengan maksimal 3 item yang dipisah dengan koma (,)"
         elif tool_name == "rute_bus":
             # TODO: transID
             pass

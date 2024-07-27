@@ -10,7 +10,7 @@ class FoodMenuIngestor:
     A class to ingest food menu data into a Qdrant vector database using Google Generative AI embeddings.
     """
 
-    def __init__(self, host="localhost", port=6333, collection_name="food-menu", model_name="models/embedding-001", requests_per_minute=60):
+    def __init__(self, host="170.64.228.233", port=6333, collection_name="food-menu", model_name="models/embedding-001", requests_per_minute=60):
         """
         Initialize the FoodMenuIngestor with Qdrant client and Google Generative AI embeddings.
 

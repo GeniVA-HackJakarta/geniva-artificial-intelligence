@@ -34,9 +34,10 @@ def hit_multimodal_recommendation(url: str, query: str, file_path: str):
 if __name__ == "__main__":
     url = "http://localhost:8000/generate-recommendation"
     # text_result = hit_text_recommendation(url, "Nama: Alif Ramadhan, aku laper banget pengen makan yang manis-manis dengan budget 50$")
+    text_result = hit_text_recommendation(url, "Nama: Alif Ramadhan, aku laper banget pengen makan")
     # image_result = hit_image_recommendation(url, "static/keju.jpg")
-    multimodal_result = hit_multimodal_recommendation(
-        url, 
-        query="Berikan rekomendasi makanan terkait gambar yang diberikan", 
-        file_path="static/keju.jpg"
-    )
+    # multimodal_result = hit_multimodal_recommendation(
+    #     url, 
+    #     query="Berikan rekomendasi makanan terkait gambar yang diberikan", 
+    #     file_path="static/keju.jpg"
+    # )
