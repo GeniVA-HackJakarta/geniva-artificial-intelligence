@@ -1,6 +1,24 @@
 class Prompt:
     inst_prompt: str = "kamu adalah GenieVA virtual assisten membantu perjalanan di aplikasi Grab, jawab secara singkat dan padat namun tetap intuitif respon nya"
     desc_prompt: str = "Berdasarkan gambar yang di upload, apa nama makanan tersebut menggunakan bahasa inggris?"
+    base_prompt_routing = \
+    """
+    Based on provided question, please choose which action / tools should be used to fulfill the question objective
+
+    tools provided:
+    {list_tools}
+
+    Example
+    -----------------------
+    question: Saya mau pesan makanan hangat dan berkuah
+    tools_choosen: menu_makanan
+
+    question: saya ingin rute perjalanan hemat dari kantor ke rumah dengan menggunakan grab car / transportasi umum
+    tools_choosen: rute_bus
+    -----------------------
+    question: {query}
+    tools_choosen: 
+    """
     desc_food_prompt: str = \
     """
     Berdasarkan informasi data dibawah, berikan 1 kalimat narasi yang padat dan interaktif (disertai membaca emosi pertanyaan dari user, usahakan harus selalu solutif dan ramah)

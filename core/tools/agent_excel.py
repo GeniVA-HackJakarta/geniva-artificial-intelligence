@@ -67,25 +67,9 @@ class ExcelAgent:
 
     def agent_routing(self, query):
         list_tools = '\n'.join(self.tools)
-        base_prompt_routing = \
-            f"""
-            Based on provided question, please choose which action / tools should be used to fulfill the question objective
-
-            tools provided:
-            {list_tools}
-
-            Example
-            -----------------------
-            question: Saya mau pesan makanan hangat dan berkuah
-            tools_choosen: menu_makanan
-
-            question: saya ingin rute perjalanan hemat dari kantor ke rumah dengan menggunakan grab car / transportasi umum
-            tools_choosen: rute_bus
-            -----------------------
-            question: {query}
-            tools_choosen: 
-            """
-        result = self.llm.invoke(input=base_prompt_routing)
+        result = self.llm.invoke(input=Prompt.base_prompt_routing.format(
+            list_tools=list_tools, question=query
+        ))
         parse_result = result.content.split(":")[1].strip()
         print("[Tool Choosen]", parse_result)
         return parse_result
