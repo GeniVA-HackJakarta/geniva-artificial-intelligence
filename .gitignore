@@ -159,7 +159,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Taxonomy corpus private
-dags/preprocess/corpus
-dags/preprocess/final_dataset/result.csv
-dataset/result.csv
+# Docker compose for development
+docker-compose-database.yml
+docker-compose-service.yml
