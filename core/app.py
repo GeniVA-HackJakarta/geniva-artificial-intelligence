@@ -58,13 +58,13 @@ async def test_qdrant():
         return {"message": "Qdrant connection successful"}
     raise HTTPException(status_code=500, detail="Qdrant connection failed")
 
-@app.get("/get-recommendation-text")
-async def get_recommendation_text(query: str):
+@app.post("/get-recommendation-text")
+async def recommendation_text(query: str):
     result = agent_excel.invoke(query=query, inst_prompt=Prompt.inst_prompt)
     return {"message": result}
 
 @app.post("/get-recommendation-image")
-def get_recommendation_image(file: UploadFile = File(...)):
+def recommendation_image(file: UploadFile = File(...)):
     image_content = file.file.read()
     result = generate_image_description(model=agent_visual, embedding=embedding_model, client=client_qdrant, image=image_content)
     return {"message": result}
