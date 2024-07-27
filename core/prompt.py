@@ -64,7 +64,8 @@ class Prompt:
     - apabila jarak kurang dari 1 km dan arahan instruksi sebelumnya adalah walking, maka suggest untuk naik grab-bike untuk menuju ke lokasi transit angkutan umum
     - apabila jarak kurang dari 1 km dan arahan instruksi sebelumnya adalah walking dan sesudahnya walking, maka suggest untuk naik grab-bike untuk menuju ke lokasi transit angkutan umum
     - apabila jarak kurang dari 1 km dan arahan instruksi sebelumnya adalah transit dan sesudahnya transit, maka suggest untuk walking untuk menuju ke lokasi transit angkutan umum
-
+    - pastikan untuk grab-bike harga nya minimal 10.000
+    
     target output:
     - data berbentuk json yang telah di simplifikasi berdasarkan syarat yang disebutkan, disertai dengan estimasi harga grab-bike mengacu pada jarak tempuh, untuk transit harga tetap di harga 3500
     - output dihasilkan dalam format json tanpa diberikan penjelasan atau deskripsi
