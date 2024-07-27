@@ -76,8 +76,11 @@ class FoodMenuIngestor:
             point = models.PointStruct(
                 id=index,
                 vector=embedding,
-                payload={"text": text}
-            )
+                payload={
+                    "text": text,
+                    "menu_id": row["menu_id"],
+                    "restoran_id": row["restaurant_id"]
+            })
             points.append(point)
         
         self.qdrant_client.upsert(
