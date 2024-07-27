@@ -18,7 +18,7 @@ class ExcelAgent:
             "common_conversation": llm
         }
     
-    def result_parser(self, result: str) -> List[str]:
+    def result_parser_tool(self, result: str) -> List[str]:
         print("[Result w/o Parsing]", result)
         result_parse = {'output': '', 'description': ''}
         if isinstance(result, dict):
@@ -28,21 +28,27 @@ class ExcelAgent:
             result_parse = list(map(lambda char: char.strip(), result_parse['output'].split(",")))
         return result_parse
 
-    def invoke(self, query: str):
+    def invoke(self, query: str, inst_prompt: str):
         tool_choosen = self.agent_routing(query=query)
         tool_agent = self.tools[tool_choosen]
         if tool_agent is not None:
             additional_query = self._additional_prompt(tool_name=tool_choosen, query=query)
-            _result = tool_agent.invoke(additional_query)
-            _result_desc = tool_agent.invoke(
-                query +
-                "Pada query sebelumnya sudah di dapatkan ID yang ditentukan yaitu: " +
-                _result['output'] +
-                "Cukup ambil informasi dari ID yang telah diberikan" + 
-                "Berdasarkan informasi yang ditemukan, jawab pertanyaan user dengan ramah, intuitif, dan naratif tanpa mention informasi terkait ID yang diberikan."
+            _result = tool_agent.invoke(
+                "System Instruct: " + inst_prompt + 
+                additional_query
             )
-            _result["description"] = _result_desc["output"]
-            result = self.result_parser(result=_result)
+            if isinstance(_result, dict):
+                _result_desc = tool_agent.invoke(
+                    query +
+                    "Pada query sebelumnya sudah di dapatkan ID yang ditentukan yaitu: " +
+                    _result['output'] +
+                    "Cukup ambil informasi dari ID yang telah diberikan" + 
+                    "Berdasarkan informasi yang ditemukan, jawab pertanyaan user dengan ramah, intuitif, dan naratif tanpa mention informasi terkait ID yang diberikan."
+                )
+                _result["description"] = _result_desc["output"]
+                result = self.result_parser_tool(result=_result)
+            else:
+                result = {"output": _result.content, "description": ""}
             return result
 
     def agent_routing(self, query):

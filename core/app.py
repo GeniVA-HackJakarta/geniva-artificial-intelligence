@@ -50,8 +50,8 @@ async def test_qdrant():
     raise HTTPException(status_code=500, detail="Qdrant connection failed")
 
 @app.get("/get-recommendation")
-async def get_recommendation(query: str, base_prompt: Optional[str], inst_prompt: Optional[str]):
-    result = agent_excel.invoke(query=query)
+async def get_recommendation(query: str, inst_prompt: Optional[str]):
+    result = agent_excel.invoke(query=query, inst_prompt=inst_prompt)
     return {"message": result}
 
 
