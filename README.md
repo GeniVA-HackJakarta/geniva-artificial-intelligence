@@ -1,36 +1,36 @@
 # Genieva AI Assistant
 
-Genieva adalah asisten AI yang dikembangkan untuk mempermudah pengguna Grab dalam melakukan transaksi Grab Food, Grab Bike, Grab Car, dan layanan transportasi Grab lainnya.
+Genieva is an AI assistant developed to simplify Grab users' experience in making transactions for Grab Food, Grab Bike, Grab Car, and other Grab transportation services.
 
-## Daftar Isi
-- [Teknologi yang Digunakan](#teknologi-yang-digunakan)
-- [Fitur Utama](#fitur-utama)
-- [Struktur Proyek](#struktur-proyek)
-- [Instalasi dan Penggunaan](#instalasi-dan-penggunaan)
+## Table of Contents
+- [Technologies Used](#technologies-used)
+- [Key Features](#key-features)
+- [Project Structure](#project-structure)
+- [Installation and Usage](#installation-and-usage)
 - [API Endpoints](#api-endpoints)
-- [Kontribusi](#kontribusi)
-- [Lisensi](#lisensi)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Teknologi yang Digunakan
+## Technologies Used
 
-Genieva dibangun menggunakan stack teknologi modern yang mencakup:
+Genieva is built using a modern technology stack that includes:
 
-- **FastAPI**: Framework Python yang cepat untuk membangun API dengan performa tinggi.
-- **LangChain**: Library untuk pengembangan aplikasi yang didukung oleh model bahasa.
-- **Gemini**: Model AI dari Google untuk pemrosesan bahasa alami dan generasi teks.
-- **Google Maps API**: Untuk fungsionalitas terkait lokasi dan pemetaan.
-- **SQL Agent**: Untuk interaksi dengan database dan query yang kompleks.
-- **Docker & Docker Compose**: Untuk kontainerisasi dan orkestrasi layanan.
+- **FastAPI**: A fast Python framework for building high-performance APIs.
+- **LangChain**: A library for developing applications powered by language models.
+- **Gemini**: Google's AI model for natural language processing and text generation.
+- **Google Maps API**: For location-related functionality and mapping.
+- **SQL Agent**: For database interaction and complex queries.
+- **Docker & Docker Compose**: For containerization and service orchestration.
 
-## Fitur Utama
+## Key Features
 
-1. **Pemesanan Makanan**: Membantu pengguna memesan makanan melalui Grab Food dengan rekomendasi personalisasi.
-2. **Transportasi**: Mempermudah pemesanan Grab Bike dan Grab Car.
-3. **Rekomendasi Rute**: Memberikan saran rute optimal untuk perjalanan.
-4. **Asisten Percakapan**: Menjawab pertanyaan pengguna tentang layanan Grab.
-5. **Integrasi Lokasi**: Memanfaatkan data lokasi untuk memberikan pengalaman yang lebih baik.
+1. **Food Ordering**: Assists users in ordering food through Grab Food with personalized recommendations.
+2. **Transportation**: Simplifies booking for Grab Bike and Grab Car.
+3. **Route Recommendations**: Provides suggestions for optimal travel routes.
+4. **Conversational Assistant**: Answers user questions about Grab services.
+5. **Location Integration**: Utilizes location data to provide an enhanced experience.
 
-## Struktur Proyek
+## Project Structure
 
 ```
 geniva-artificial-intelligence/
@@ -56,38 +56,46 @@ geniva-artificial-intelligence/
 ├── README.md
 ```
 
-## Instalasi dan Penggunaan
+## Installation and Usage
 
-Proyek ini menggunakan Docker Compose untuk mengelola layanan-layanannya. File `docker-compose-database.yml` dan `docker-compose-service.yml` tidak disertakan dalam repositori publik karena alasan keamanan.
+This project uses Docker Compose to manage its services. The `docker-compose-database.yml` and `docker-compose-service.yml` files are not included in the public repository for security reasons.
 
-Untuk menjalankan proyek:
+To run the project:
 
-1. Pastikan Docker dan Docker Compose terinstal di sistem Anda.
+1. Ensure Docker and Docker Compose are installed on your system.
 
-2. Clone repositori ini:
+2. Clone this repository:
    ```
    https://github.com/GeniVA-HackJakarta/geniva-artificial-intelligence.git
    ```
 
-3. Masuk ke direktori proyek:
+3. Navigate to the project directory:
    ```
    cd geniva-artificial-intelligence
    ```
 
-4. Salin file `.env.example` menjadi `.env` dan isi dengan konfigurasi yang sesuai:
+4. Copy the `.env.example` file to `.env` and fill it with the appropriate configuration:
    ```
    cp .env.example .env
    ```
 
-5. Hubungi administrator proyek di alif.datascientist@gmail.com untuk mendapatkan file `docker-compose-database.yml` dan `docker-compose-service.yml`.
+5. Contact the project administrator at alif.datascientist@gmail.com to obtain the `docker-compose-database.yml` and `docker-compose-service.yml` files.
 
-6. Jalankan layanan menggunakan Docker Compose:
+6. Run the services using Docker Compose:
    ```
    docker-compose -f docker-compose-database.yml -f docker-compose-service.yml up -d
    ```
 
-Catatan: Pastikan untuk tidak mengunggah file Docker Compose ke repositori publik jika berisi informasi sensitif.
+Note: Ensure not to upload Docker Compose files to public repositories if they contain sensitive information.
 
 ## API Endpoints
 
-Berdasarkan struktur proyek, endpoint spesifik mungkin didefinisikan dalam `core/app.py`. Untuk informasi lebih lanjut tentang penggunaan API, Anda bisa merujuk ke dokumentasi yang terletak di folder `documentation/`.
+Based on the project structure, specific endpoints are likely defined in `core/app.py`. For more information on API usage, please refer to the documentation located in the `documentation/` folder.
+
+## Contributing
+
+We welcome contributions! Please read `CONTRIBUTING.md` (if available) for details on the process for submitting pull requests.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) (or adjust according to the license used).
