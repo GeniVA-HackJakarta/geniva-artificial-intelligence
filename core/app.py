@@ -1,12 +1,12 @@
 import uvicorn
 from config import config
 from prompt import Prompt
-from fastembed import TextEmbedding
 from tools.agent_excel import ExcelAgent
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_google_genai import ChatGoogleGenerativeAI
 from fastapi import FastAPI, HTTPException, File, UploadFile
 from tools.image_description import generate_image_description
+from langchain_google_genai.embeddings import GoogleGenerativeAIEmbeddings
 from db.connect import get_postgres_connection, get_redis_connection, get_qdrant_connection
 
 
@@ -30,7 +30,7 @@ agent_excel = ExcelAgent(
     temperature=config.GEMINI_TEMPERATURE
 )
 client_qdrant = get_qdrant_connection()
-embedding_model = TextEmbedding(config.QDRANT_EMBEDDING_NAME)
+embedding_model = GoogleGenerativeAIEmbeddings(model=config.QDRANT_EMBEDDING_NAME, google_api_key=config.GEMINI_API_KEY)
 
 
 @app.get("/")

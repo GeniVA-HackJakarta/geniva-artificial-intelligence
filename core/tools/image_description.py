@@ -20,7 +20,7 @@ def generate_image_description(model: object, embedding: object, client: object,
     )
     response = model.invoke([message])
 
-    vector = embedding.encode(response.content).tolist()
+    vector = embedding.embed_query(response.content)
     semantic_search_result = client.search(
         query_vector=vector,
         limit=config.QDRANT_LIMIT,

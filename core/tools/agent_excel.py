@@ -24,7 +24,7 @@ class ExcelAgent:
             result_parse['output'] = result['output']
             result_parse['description'] = result['description']
         if "," in result_parse["output"]:
-            result_parse = list(map(lambda char: char.strip(), result_parse['output'].split(",")))
+            result_parse["output"] = list(map(lambda char: char.strip(), result_parse['output'].split(",")))
         return result_parse
 
     def invoke(self, query: str, inst_prompt: str):
@@ -32,19 +32,21 @@ class ExcelAgent:
         tool_agent = self.tools[tool_choosen]
         if tool_agent is not None:
             additional_query = self._additional_prompt(tool_name=tool_choosen, query=query)
-            _result = tool_agent.invoke(
-                "System Instruct: " + inst_prompt + 
-                additional_query
-            )
+            _result = tool_agent.invoke("System Instruct: " + inst_prompt + additional_query)
+            print("[Result Query / LLM Raw]", _result)
             if isinstance(_result, dict):
-                _result_desc = tool_agent.invoke(
-                    query +
-                    "Pada query sebelumnya sudah di dapatkan ID yang ditentukan yaitu: " +
-                    _result['output'] +
-                    "Cukup ambil informasi dari ID yang telah diberikan" + 
-                    "Berdasarkan informasi yang ditemukan, jawab pertanyaan user dengan ramah, intuitif, dan naratif tanpa mention informasi terkait ID yang diberikan."
-                )
-                _result["description"] = _result_desc["output"]
+                # _result_desc = tool_agent.invoke(
+                #     # query +
+                #     # "Pada query sebelumnya sudah di dapatkan ID yang ditentukan yaitu: " +
+                #     # _result['output'] +
+                #     "Hasilkan deskripsi berdasarkan informasi" + 
+                #     "nama makanan" if tool_choosen == "menu_makanan" else "nama restoran" + 
+                #     "dari ID yang telah diberikan berdasarkan kolom " +
+                #     "menu_id" if tool_choosen == "menu_makanan" else "zomato_id" + 
+                #     "Berdasarkan informasi yang ditemukan, jawab pertanyaan user dengan ramah, intuitif, dan naratif tanpa mention informasi terkait ID yang diberikan."
+                # )
+                # _result["description"] = _result_desc["output"]
+                df_string = ...
                 result = self.result_parser_tool(result=_result)
             else:
                 result = {"output": _result.content, "description": ""}
@@ -88,6 +90,7 @@ class ExcelAgent:
 
     def _agent_menu(self, df_location: str):
         data_menu = pd.read_excel(df_location)
+        data_menu = data_menu.head(100)
         agent_menu = create_pandas_dataframe_agent(
             llm=self.llm, df=data_menu, verbose=True,
             max_iterations=5, allow_dangerous_code=True
@@ -96,8 +99,8 @@ class ExcelAgent:
 
     def _agent_restoran(self, df_location: str):
         data_restoran = pd.read_excel(df_location)
+        data_restoran = data_restoran.head(100)
         data_restoran.columns = list(map(lambda name: name.strip(), data_restoran.columns))
-        print(data_restoran.columns)
         agent_restorant = create_pandas_dataframe_agent(
             llm=self.llm, df=data_restoran, verbose=True,
             max_iterations=5, allow_dangerous_code=True
