@@ -110,8 +110,8 @@ def handle_query_without_image(request_body: RequestBody, agents):
         result = {}
         _result = agents["excel"].llm.invoke(input=Prompt.disc_prompt.format(query=request_body.query)).content
         result["input"] = request_body.query
-        result["output"] = _result
-        result["description"] = ""
+        result["output"] = []
+        result["description"] = _result
     else:
         result = agents["excel"].invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
     result["type"] = tool_chosen

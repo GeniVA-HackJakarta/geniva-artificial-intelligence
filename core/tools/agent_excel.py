@@ -63,7 +63,7 @@ class ExcelAgent:
                 _result["type"] = tool_choosen
                 result = _result
             else:
-                result = {"input": "System Instruct: " + inst_prompt + additional_query, "output": _result.content, "description": ""}
+                result = {"input": "System Instruct: " + inst_prompt + additional_query, "output": [], "description": _result.content}
             return result
 
     def agent_routing(self, query):
