@@ -8,7 +8,7 @@
     </div>      
 </div>
 
-# Genieva AI Assistant
+<h1 align="center">Genieva AI Assistant</h1>
 
 Genieva is an AI assistant developed to simplify Grab users' experience in making transactions for Grab Food, Grab Bike, Grab Car, and other Grab transportation services.
 
