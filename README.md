@@ -1,6 +1,6 @@
 <div align="center">
     <div>
-        <img height="150px" src="https://raw.githubusercontent.com/GeniVA-HackJakarta/geniva-backend/main/img/logo.png?token=GHSAT0AAAAAACMLAAVJYXO752GMD4LTZW5AZVFWCLA" alt="Genieva Logo"/>
+        <img height="150px" src="https://i.ibb.co.com/b7m7L5Q/logo-color.png" alt="Genieva Logo"/>
     </div>
     <div>
         <h3><b>Genieva AI Assistant</b></h3>
