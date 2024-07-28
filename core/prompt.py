@@ -39,10 +39,10 @@ class Prompt:
     "total_duration": "0 minutes",
     "steps": [
             {
-                "type": "grab-bike", // opsi grab-bike / transit / walking
+                "type": "grab-bike",
                 "distance": "5 km",
                 "duration": "15 mins",
-                "price": "10.000" // mata uang IDR, untuk grab-bike disesuaikan dengan jarak tempuh, kalo transit 3.500, kalo walking 0.
+                "price": "10.000"
             }
             ...
     ]
@@ -65,6 +65,8 @@ class Prompt:
     - apabila jarak kurang dari 1 km dan arahan instruksi sebelumnya adalah walking dan sesudahnya walking, maka suggest untuk naik grab-bike untuk menuju ke lokasi transit angkutan umum
     - apabila jarak kurang dari 1 km dan arahan instruksi sebelumnya adalah transit dan sesudahnya transit, maka suggest untuk walking untuk menuju ke lokasi transit angkutan umum
     - pastikan untuk grab-bike harga nya minimal 10.000
+    - price mengacu pada mata uang IDR, untuk grab-bike disesuaikan dengan jarak tempuh, kalo transit 3.500, kalo walking 0.
+    - type hanya bisa grab-bike / transit / walking
     
     target output:
     - data berbentuk json yang telah di simplifikasi berdasarkan syarat yang disebutkan, disertai dengan estimasi harga grab-bike mengacu pada jarak tempuh, untuk transit harga tetap di harga 3500
@@ -76,8 +78,8 @@ class Prompt:
         {
             "total_distance": "0 km",
             "total_duration": "0 minutes",
-            "price": "5.000" // mata uang IDR, untuk grab-bike / grab-car disesuaikan dengan jarak tempuh
-            "type": "grab-bike" // opsi grab-bike / grab-car
+            "price": "5.000"
+            "type": "grab-bike"
         }
         ...
     ]
@@ -96,6 +98,8 @@ class Prompt:
 
     dengan syarat:
     - Secara logika antara melaju menggunakan mobil dan motor memiliki perbedaan waktu sampai meskipun dengan durasi yang sama, tolong pertimbangkan itu dalam penentuan durasi waktu.
+    - price mengacu pada mata uang IDR, untuk grab-bike / grab-car disesuaikan dengan jarak tempuh
+    - type hanya bisa "grab-bike" atau "grab-car"
 
     target output:
     - data berbentuk json yang telah di simplifikasi berdasarkan syarat yang disebutkan, disertai dengan estimasi harga grab-bike mengacu pada jarak tempuh, untuk transit harga tetap di harga 3500
@@ -110,8 +114,8 @@ class Prompt:
     data promosi:
     Grab Food Makan Siang - 20%
     Grab Food Hemat       - 30%
-    Grab Bike Jakarta      - 15%
-    Grab Bike Hemat        - 30%
+    Grab Bike Jakarta     - 15%
+    Grab Bike Hemat       - 30%
     Grab Car Jakarta      - 10%
     Grab Car Hemat        - 30%
 
