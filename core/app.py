@@ -108,16 +108,19 @@ def handle_query_without_image(request_body: RequestBody, agents):
         result = agents["maps"].invoke(query=request_body.query, lon=request_body.lon, lat=request_body.lat)
     else:
         result = agents["excel"].invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
+    result["type"] = tool_chosen
     return {"message": result}
 
 def handle_image_only(request_body: RequestBody, agents):
     image_content = base64.b64decode(request_body.file)
-    result = generate_image_description(
+    context_data = generate_image_description(
         model=agents["visual"],
         embedding=get_embedding_model(),
         client=get_qdrant_client(),
         image=image_content
     )
+    result = agents["excel"].direct_invoke(query=request_body.query, context_data=context_data)
+    result["type"] = "menu_makanan"
     return {"message": result}
 
 if __name__ == "__main__":

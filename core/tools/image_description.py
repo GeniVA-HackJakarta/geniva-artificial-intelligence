@@ -36,6 +36,6 @@ def generate_image_description(model: object, embedding: object, client: object,
             "score": hit.score
         } 
         for hit in semantic_search_result
-    ]
+    ][:3]
     
     return context_retrieved

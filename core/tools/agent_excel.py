@@ -68,7 +68,7 @@ class ExcelAgent:
     def agent_routing(self, query):
         list_tools = '\n'.join(self.tools)
         result = self.llm.invoke(input=Prompt.base_prompt_routing.format(
-            list_tools=list_tools, question=query
+            list_tools=list_tools, query=query
         ))
         parse_result = result.content.split(":")[1].strip()
         print("[Tool Choosen]", parse_result)
