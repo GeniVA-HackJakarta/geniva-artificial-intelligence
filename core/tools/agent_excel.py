@@ -17,7 +17,8 @@ class ExcelAgent:
             "menu_makanan": agent_grabfood,
             "restoran": agent_grabfood,
             "common_conversation": llm,
-            "transportation": None
+            "transportation": None,
+            "promotion": None
         }
         self._agent_grab_food()
 

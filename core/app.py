@@ -106,6 +106,12 @@ def handle_query_without_image(request_body: RequestBody, agents):
     tool_chosen, _ = agents["excel"].choice_route(query=request_body.query)
     if tool_chosen == "transportation":
         result = agents["maps"].invoke(query=request_body.query, lon=request_body.lon, lat=request_body.lat)
+    elif tool_chosen == "promotion":
+        result = {}
+        _result = agents["excel"].llm.invoke(input=Prompt.disc_prompt.format(query=request_body.query)).content
+        result["input"] = request_body.query
+        result["output"] = _result
+        result["description"] = ""
     else:
         result = agents["excel"].invoke(query=request_body.query, inst_prompt=Prompt.inst_prompt)
     result["type"] = tool_chosen

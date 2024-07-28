@@ -101,3 +101,20 @@ class Prompt:
     - data berbentuk json yang telah di simplifikasi berdasarkan syarat yang disebutkan, disertai dengan estimasi harga grab-bike mengacu pada jarak tempuh, untuk transit harga tetap di harga 3500
     - output dihasilkan dalam format json tanpa diberikan penjelasan atau deskripsi
     """
+    disc_prompt: str = \
+    """
+    anda adalah expert dari aplikasi grab
+
+    berdasarkan data yang diberikan, berikan informasi terkait promosi yang tersedia saat ini.
+
+    data promosi:
+    Grab Food Makan Siang - 20%
+    Grab Food Hemat       - 30%
+    Grab Bike Jakarta      - 15%
+    Grab Bike Hemat        - 30%
+    Grab Car Jakarta      - 10%
+    Grab Car Hemat        - 30%
+
+    Question: {query}
+    """
+
